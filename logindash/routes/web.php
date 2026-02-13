@@ -1,21 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
 
-Route::get('/login', function ($email = 'Enter Your Email') {
-    return view('login', [
-        'email' => $email
-    ]);
-});
-
-
-Route::get('/test', function($test = 'Test')
-{
-    return view('test', [
-        'test' => $test
-    ]);
-});
+Route::post('/login', [AuthController::class, 'login']);
