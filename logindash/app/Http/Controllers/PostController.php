@@ -16,7 +16,7 @@ class PostController extends Controller
     {
         // Get newest posts first + load user data
         $posts = Post::with('user')->latest()->get();
-
+        
         // Send posts to Blade page
         return view('posts.index', compact('posts'));
     }
