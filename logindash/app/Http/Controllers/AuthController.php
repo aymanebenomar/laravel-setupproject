@@ -18,7 +18,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) 
         {
             $request->session()->regenerate();
-            return redirect('/dashboard');
+            return redirect()->route('posts.index');
         }
 
         return back()->withErrors([
@@ -56,6 +56,6 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect()->route('posts.index');
     }
 }
