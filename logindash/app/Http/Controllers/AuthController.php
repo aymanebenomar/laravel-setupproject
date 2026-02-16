@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function showLogin(){
+        return view('login');
+    }
+
+    public function showRegister(){
+        return view('register');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
