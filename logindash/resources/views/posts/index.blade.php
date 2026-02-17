@@ -29,7 +29,7 @@
       margin:0;
     }
 
-    .wrap{max-width:920px;margin:0 auto;padding:26px 16px 44px}
+    .wrap{max-width:1100px;margin:0 auto;padding:26px 16px 44px}
 
     /* Topbar */
     .topbar{
@@ -114,6 +114,11 @@
       cursor:pointer;
       transition:transform .12s ease, filter .12s ease;
       white-space:nowrap;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
     .btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
     .btn:active{transform:translateY(0px)}
@@ -138,42 +143,122 @@
     .btnDanger:hover{transform:translateY(-1px);border-color:rgba(255,107,107,.6)}
     .btnDanger:active{transform:translateY(0px)}
 
-    /* Form */
-    label{display:block;margin:0 0 6px}
-    input,textarea{
-      width:100%;
-      background:var(--panel2);
-      border:1px solid var(--border);
-      border-radius:12px;
-      color:var(--text);
-      padding:11px 12px;
-      outline:none;
-      transition:border-color .12s ease, box-shadow .12s ease;
-    }
-    input:focus,textarea:focus{
-      border-color:rgba(141,255,139,.45);
-      box-shadow:0 0 0 3px rgba(141,255,139,.10);
-    }
-    textarea{min-height:120px;resize:vertical}
     .gap{height:14px}
 
-    .composerHead{
+    /* ====== FACEBOOK LAYOUT GRID ====== */
+    .grid{
+      display:grid;
+      grid-template-columns: 260px 1fr 260px;
+      gap:14px;
+      align-items:start;
+      margin-top:14px;
+    }
+
+    /* Sticky sidebars (desktop) */
+    .leftCol, .rightCol{
+      position:sticky;
+      top:86px; /* below topbar */
+      align-self:start;
+    }
+
+    /* Left profile */
+    .profile{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .avatar{
+      width:46px;height:46px;border-radius:14px;
+      background:rgba(141,255,139,.12);
+      border:1px solid rgba(141,255,139,.25);
+      display:grid;place-items:center;
+      font-weight:900;
+      color:rgba(233,238,247,.95);
+      flex:0 0 auto;
+      box-shadow:0 0 16px rgba(141,255,139,.10);
+    }
+    .name{
+      margin:0;
+      font-weight:900;
+      letter-spacing:-.01em;
+      font-size:15px;
+      line-height:1.2;
+    }
+    .email{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:180px;
+    }
+
+    .nav{
+      margin-top:12px;
+      display:grid;
+      gap:8px;
+    }
+    .nav a{
       display:flex;
       align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:rgba(233,238,247,.9);
+      text-decoration:none;
+      transition:transform .12s ease, border-color .12s ease, background .12s ease;
+      font-weight:800;
+      font-size:13px;
+    }
+    .nav a:hover{
+      transform:translateY(-1px);
+      border-color:rgba(141,255,139,.28);
+      background:rgba(141,255,139,.06);
+    }
+
+    /* Right create widget */
+    .widgetHead{
+      display:flex;
+      align-items:flex-start;
       justify-content:space-between;
       gap:12px;
       margin-bottom:10px;
     }
-    .composerTitle{
+    .widgetTitle{
       margin:0;
       font-size:15px;
       font-weight:900;
       letter-spacing:-.01em;
-      color:rgba(233,238,247,.9);
+      color:rgba(233,238,247,.92);
     }
+    .plusBtn{
+      width:44px;height:44px;
+      border-radius:14px;
+      border:1px solid rgba(141,255,139,.25);
+      background:rgba(141,255,139,.12);
+      color:rgba(233,238,247,.98);
+      font-size:26px;
+      font-weight:900;
+      line-height:1;
+      display:grid;
+      place-items:center;
+      text-decoration:none;
+      transition:transform .12s ease, filter .12s ease, border-color .12s ease;
+      box-shadow:0 0 18px rgba(141,255,139,.10);
+    }
+    .plusBtn:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.05);
+      border-color:rgba(141,255,139,.45);
+    }
+    .plusBtn:active{transform:translateY(0)}
 
     /* Feed */
-    .feed{margin-top:16px;display:grid;gap:14px}
+    .feed{display:grid;gap:14px}
     .postHead{
       display:flex;
       justify-content:space-between;
@@ -201,14 +286,12 @@
       white-space:pre-wrap;
       overflow-wrap:anywhere;
     }
-
     .empty{
       text-align:center;
       padding:18px;
       color:var(--muted);
     }
 
-    /* Footer note */
     .footerNote{
       margin-top:18px;
       text-align:center;
@@ -216,6 +299,23 @@
       font-size:12px;
     }
 
+    /* Pagination */
+    .pager{
+      margin-top:12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .grid{
+        grid-template-columns: 1fr;
+      }
+      .leftCol, .rightCol{
+        position:static;
+      }
+      .rightCol{order:2}
+      .midCol{order:1}
+      .leftCol{order:3}
+    }
     @media (max-width: 520px){
       .brandTitle{font-size:20px}
       .logo{width:40px;height:40px}
@@ -228,6 +328,7 @@
 <body>
   <div class="wrap">
 
+    {{-- TOPBAR --}}
     <div class="topbar">
       <div class="brand">
         <div class="logo" aria-hidden="true">
@@ -237,17 +338,27 @@
           <h1 class="brandTitle">
             Posts<span class="dot">.</span>
           </h1>
-          <div class="muted">Welcome, <strong>{{ auth()->user()->name }}</strong></div>
+          <div class="muted">
+            Welcome, <strong>{{ auth()->user()->name }}</strong>
+          </div>
         </div>
       </div>
 
-      <form method="POST" action="/logout">
+      <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button class="btn btnGhost" type="submit">Logout</button>
       </form>
     </div>
 
-    {{-- Validation errors --}}
+    {{-- FLASH SUCCESS --}}
+    @if (session('success'))
+      <div class="card" style="border-color: rgba(141,255,139,.22); background: rgba(141,255,139,.06);">
+        <strong style="color: rgba(141,255,139,.95);">✅ {{ session('success') }}</strong>
+      </div>
+      <div class="gap"></div>
+    @endif
+
+    {{-- VALIDATION ERRORS (will mainly appear on create page, but keep it here safe) --}}
     @if ($errors->any())
       <div class="card errors">
         <strong>Fix these:</strong>
@@ -260,72 +371,99 @@
       <div class="gap"></div>
     @endif
 
-    {{-- Create post --}}
-    <div class="card">
-      <div class="composerHead">
-        <p class="composerTitle">Create a post</p>
-        <span class="muted">Share something with the feed</span>
-      </div>
+    {{-- 3-COLUMN LAYOUT --}}
+    <div class="grid">
 
-      <form method="POST" action="{{ route('posts.store') }}">
-        @csrf
-
-        <label class="muted">Title</label>
-        <input
-          name="title"
-          value="{{ old('title') }}"
-          placeholder="Write a title..."
-          autocomplete="off"
-          required
-        />
-
-        <div class="gap"></div>
-
-        <label class="muted">Content</label>
-        <textarea
-          name="content"
-          placeholder="What's on your mind?"
-          required
-        >{{ old('content') }}</textarea>
-
-        <div class="gap"></div>
-
-        <button class="btn" type="submit">Post</button>
-      </form>
-    </div>
-
-    {{-- Feed --}}
-    <div class="feed">
-      @forelse ($posts as $post)
-        <article class="card">
-          <div class="postHead">
-            <div>
-              <h3 class="title">{{ $post->title }}</h3>
-              <div class="meta">
-                By <strong>{{ $post->user->name ?? 'Unknown' }}</strong>
-                • {{ $post->created_at->diffForHumans() }}
-              </div>
+      {{-- LEFT SIDEBAR --}}
+      <aside class="leftCol">
+        <div class="card">
+          <div class="profile">
+            <div class="avatar">
+              {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
             </div>
-
-            {{-- Delete only if owner --}}
-            @if ($post->user_id === auth()->id())
-              <form method="POST" action="{{ route('posts.destroy', $post->id) }}">
-                @csrf
-                @method('DELETE')
-                <button class="btnDanger" type="submit">Delete</button>
-              </form>
-            @endif
+            <div style="min-width:0">
+              <p class="name">{{ auth()->user()->name }}</p>
+              <p class="email">{{ auth()->user()->email }}</p>
+            </div>
           </div>
 
-          <p class="content">{{ $post->content }}</p>
-        </article>
-      @empty
-        <div class="card empty">No posts yet. Create the first one 👆</div>
-      @endforelse
-    </div>
+          <div class="nav">
+            <a href="{{ route('posts.index') }}">
+              <span>🏠 Feed</span>
+              <span class="muted">→</span>
+            </a>
+            <a href="{{ route('posts.create') }}">
+              <span>✍️ Create post</span>
+              <span class="muted">→</span>
+            </a>
+          </div>
+        </div>
+      </aside>
 
-    <div class="footerNote">
-      Simple feed • Laravel Blade
+      {{-- MIDDLE FEED --}}
+      <main class="midCol">
+        <div class="feed">
+          @forelse ($posts as $post)
+            <article class="card">
+              <div class="postHead">
+                <div>
+                  <h3 class="title">{{ $post->title }}</h3>
+                  <div class="meta">
+                    By <strong>{{ $post->user->name ?? 'Unknown' }}</strong>
+                    • {{ $post->created_at->diffForHumans() }}
+                  </div>
+                </div>
+
+                {{-- Delete only if owner --}}
+                @if ($post->user_id === auth()->id())
+                  <form method="POST" action="{{ route('posts.destroy', $post) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btnDanger" type="submit">Delete</button>
+                  </form>
+                @endif
+              </div>
+
+              <p class="content">{{ $post->content }}</p>
+            </article>
+          @empty
+            <div class="card empty">No posts yet. Click + to create the first one.</div>
+          @endforelse
+        </div>
+
+        <div class="pager">
+          {{ $posts->links() }}
+        </div>
+
+        <div class="footerNote">
+          Simple feed • Laravel Blade • 3-column layout
+        </div>
+      </main>
+
+      {{-- RIGHT SIDEBAR --}}
+      <aside class="rightCol">
+        <div class="card">
+          <div class="widgetHead">
+            <div>
+              <p class="widgetTitle">Create</p>
+              <div class="muted">Share something with the feed</div>
+            </div>
+
+            {{-- + button goes to create page --}}
+            <a class="plusBtn" href="{{ route('posts.create') }}" title="Create post">+</a>
+          </div>
+
+          <div class="muted" style="margin-top:10px; line-height:1.6;">
+            Tip: keep posts short, clear, and real.  
+            Your feed will look more “social” with consistent titles.
+          </div>
+
+          <div style="margin-top:12px;">
+            <a class="btn" href="{{ route('posts.create') }}">Write a post</a>
+          </div>
+        </div>
+      </aside>
+
     </div>
 
   </div>
