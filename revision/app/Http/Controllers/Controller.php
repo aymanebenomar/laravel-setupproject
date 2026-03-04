@@ -26,7 +26,6 @@ class StagiaireController extends Controller
         return redirect('/stagiaires');
     }
 
-    
     public function destroy($id)
     {
         Stagiaire::find($id)->delete();
