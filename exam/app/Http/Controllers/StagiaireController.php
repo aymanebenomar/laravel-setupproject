@@ -13,7 +13,7 @@ class StagiaireController extends Controller
     public function index()
     {
         $stagiaires = Stagiaire::all();
-        return view('stagiaire.index', compact('stagiaires'));
+        return view('stagiaires.index', compact('stagiaires'));
     }
 
     /**
@@ -84,7 +84,7 @@ class StagiaireController extends Controller
     public function destroy(Stagiaire $stagiaire)
     {
         $stagiaire->delete();
-        return redirect()->route('stagiaire.index')
+        return redirect()->route('stagiaires.index')
         ->with('success', 'stagiaire deleted successfully');
     }
 }
