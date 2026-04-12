@@ -7,59 +7,94 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $tasks = Task::all();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tasks list retrieved successfully',
+            'data' => $tasks
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_completed' => 'nullable|boolean',
+        ]);
+
+        $task = Task::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task created successfully',
+            'data' => $task
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
+    public function show(string $id)
     {
-        //
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Task not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task retrieved successfully',
+            'data' => $task
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
+    public function update(Request $request, string $id)
     {
-        //
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Task not found'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'is_completed' => 'nullable|boolean',
+        ]);
+
+        $task->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task updated successfully',
+            'data' => $task
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
+    public function destroy(string $id)
     {
-        //
-    }
+        $task = Task::find($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
-    {
-        //
+        if (!$task) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Task not found'
+            ], 404);
+        }
+
+        $task->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task deleted successfully'
+        ], 200);
     }
 }
