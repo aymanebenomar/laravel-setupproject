@@ -12,6 +12,7 @@ $q4 = Annonce::whereIn('type', ['villa', 'maison'])->get();
 $q5 = Annonce::where('neuf', false)
             ->orWhere('prix', '<=', 400000)->get();
 
+
 $q6 = Annonce::latest()->first();
 
 $q7 = Annonce::where('neuf', true)
