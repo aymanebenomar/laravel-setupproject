@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->date('date_facture');
-            $table->decimal('montant', 2, 10);
+            $table->decimal('montant_total', 10, 2);
 
             $table->foreignId('commande_id')->unique()->constrained()->onDelete('cascade');
             

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignid('commande_id')->constrained()->onDelete('cascade');
-            $table->foreignid('produit-id')->constrained()->onDelete('cascade');
+            $table->foreignid('produit_id')->constrained()->onDelete('cascade');
 
             $table->integer('quantite');
 
