@@ -1,0 +1,1137 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, sans-serif); color: var(--color-text-primary); background: transparent; }
+  
+  .guide { max-width: 680px; }
+  
+  .hero { padding: 1.5rem 0 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1rem; }
+  .hero h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .hero p { font-size: 13px; color: var(--color-text-secondary); }
+  
+  .progress-bar { display: flex; gap: 4px; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+  .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-border-tertiary); cursor: pointer; transition: background .2s; }
+  .prog-dot.done { background: #1D9E75; }
+  .prog-dot.active { background: #185FA5; outline: 2px solid #B5D4F4; outline-offset: 1px; }
+  
+  .nav-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); transition: all .15s; white-space: nowrap; }
+  .pill:hover { background: var(--color-background-primary); color: var(--color-text-primary); }
+  .pill.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  
+  .section { display: none; }
+  .section.active { display: block; }
+  
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg, 12px); padding: 1rem 1.25rem; margin-bottom: 12px; }
+  
+  .sec-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .sec-sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+  
+  .concept-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--color-background-info); color: var(--color-text-info); margin-bottom: 8px; }
+  
+  pre { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 12px; font-family: var(--font-mono, monospace); font-size: 12px; overflow-x: auto; line-height: 1.6; margin: 8px 0; white-space: pre-wrap; }
+  
+  .kw { color: #7F77DD; }
+  .fn { color: #1D9E75; }
+  .str { color: #D85A30; }
+  .cm { color: var(--color-text-tertiary); }
+  .nu { color: #BA7517; }
+  
+  .tip { background: var(--color-background-success); border-left: 3px solid var(--color-border-success); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 13px; color: var(--color-text-success); margin: 8px 0; }
+  .warn { background: var(--color-background-warning); border-left: 3px solid var(--color-border-warning); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 13px; color: var(--color-text-warning); margin: 8px 0; }
+  
+  .cmd-block { display: flex; align-items: center; gap: 8px; background: var(--color-background-secondary); border-radius: 8px; padding: 8px 12px; margin: 6px 0; font-family: var(--font-mono, monospace); font-size: 12px; }
+  .cmd-prefix { color: var(--color-text-tertiary); }
+  .cmd-text { color: var(--color-text-primary); flex: 1; }
+  .copy-btn { font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+  .copy-btn:hover { background: var(--color-background-primary); }
+  
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .step-num { min-width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-info); color: var(--color-text-info); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-body { flex: 1; }
+  .step-body strong { font-weight: 500; display: block; font-size: 14px; margin-bottom: 2px; }
+  .step-body p { font-size: 13px; color: var(--color-text-secondary); }
+  
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  
+  .nav-footer { display: flex; gap: 8px; margin-top: 1.5rem; padding-top: 1rem; border-top: 0.5px solid var(--color-border-tertiary); }
+  .nav-footer button { flex: 1; padding: 8px; border-radius: 8px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); cursor: pointer; font-size: 13px; transition: all .15s; }
+  .nav-footer button:hover { background: var(--color-background-secondary); }
+  .nav-footer button.primary { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { width: 16px; height: 16px; border-radius: 4px; border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .chk.checked { background: #1D9E75; border-color: #1D9E75; }
+  .chk.checked::after { content: '✓'; color: white; font-size: 10px; }
+  
+  h3 { font-size: 15px; font-weight: 500; margin: 1rem 0 6px; }
+  h4 { font-size: 13px; font-weight: 500; margin: 10px 0 4px; color: var(--color-text-secondary); }
+  p { font-size: 13px; line-height: 1.6; }
+  
+  .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 6px; margin-left: 6px; }
+  .tag.artisan { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .tag.file { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .tag.concept { background: var(--color-background-success); color: var(--color-text-success); }
+
+  .done-banner { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: 10px; padding: 1rem 1.25rem; text-align: center; }
+  .done-banner h2 { font-size: 18px; font-weight: 500; color: var(--color-text-success); margin-bottom: 4px; }
+  .done-banner p { font-size: 13px; color: var(--color-text-success); }
+</style>
+</head>
+<body>
+<div class="guide">
+  <div class="hero">
+    <h1>Laravel Complete Revision Guide</h1>
+    <p>EFM prep — 12 core concepts, commands, examples, and practice exercises. Work through each topic in order.</p>
+  </div>
+  
+  <div class="progress-bar" id="progress-bar"></div>
+  
+  <div class="nav-pills" id="nav-pills"></div>
+  
+  <!-- All sections rendered here -->
+  <div id="sections"></div>
+  
+  <div class="nav-footer">
+    <button id="btn-prev" onclick="navigate(-1)">← Previous</button>
+    <button id="btn-next" onclick="navigate(1)" class="primary">Next →</button>
+  </div>
+</div>
+
+<script>
+const topics = [
+  {
+    id: 'setup',
+    label: '1. Setup & Artisan',
+    badge: 'Foundation',
+    subtitle: 'Install Laravel and master the Artisan command-line tool',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Installation</span>
+        <h3>Create a new Laravel project</h3>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">composer create-project laravel/laravel my-app</span><button class="copy-btn" onclick="copyCmd(this,'composer create-project laravel/laravel my-app')">copy</button></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">cd my-app && php artisan serve</span><button class="copy-btn" onclick="copyCmd(this,'php artisan serve')">copy</button></div>
+        <div class="tip">Your app runs on http://127.0.0.1:8000 by default</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Artisan — the CLI brain of Laravel</span>
+        <h3>Essential commands to memorize</h3>
+        <div class="two-col">
+          <div>
+            <h4>List & Help</h4>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan list</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan help migrate</span></div>
+            <h4>Make (generators)</h4>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:model Post</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:controller PostController</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:migration create_posts_table</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:request StorePostRequest</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:middleware CheckAge</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:seeder PostSeeder</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:factory PostFactory</span></div>
+          </div>
+          <div>
+            <h4>Database</h4>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan migrate</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan migrate:rollback</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan migrate:fresh --seed</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan db:seed</span></div>
+            <h4>Routes & Cache</h4>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan route:list</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan cache:clear</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan config:clear</span></div>
+            <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan tinker</span></div>
+          </div>
+        </div>
+        <div class="tip">💡 <strong>Shortcut:</strong> make:model Post -mcr creates the Model + Migration + Controller (resource) all at once!</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Project structure</span>
+        <h3>Key folders to know</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>app/Models</strong><p>Eloquent models (Post, User, etc)</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>app/Http/Controllers</strong><p>Handle HTTP requests and return responses</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>app/Http/Middleware</strong><p>Filter/inspect incoming requests</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>app/Http/Requests</strong><p>Form validation rules</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>database/migrations</strong><p>Schema version control files</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>routes/web.php</strong><p>All web routes (URL → controller)</p></div></div>
+          <div class="step"><div class="step-num">📁</div><div class="step-body"><strong>resources/views</strong><p>Blade template files (.blade.php)</p></div></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: 'migrations',
+    label: '2. Migrations',
+    badge: 'Database Schema',
+    subtitle: 'Version-control your database structure with migrations',
+    content: `
+      <div class="card">
+        <span class="concept-badge">What is a migration?</span>
+        <p>A migration is a PHP class that describes a change to your database schema. Think of it as version control for your database — you can create tables, add columns, roll back changes.</p>
+        <div class="tip">Migration = PHP class that creates/modifies DB tables. Run with <code>php artisan migrate</code></div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Creating & running</span>
+        <h3>Step by step</h3>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:migration create_posts_table</span></div>
+        <p style="margin: 6px 0; font-size: 13px; color: var(--color-text-secondary)">This creates <code>database/migrations/2024_01_01_000000_create_posts_table.php</code></p>
+        <pre><span class="cm">// database/migrations/..._create_posts_table.php</span>
+<span class="kw">public function</span> <span class="fn">up</span>(): <span class="kw">void</span>
+{
+    Schema::<span class="fn">create</span>(<span class="str">'posts'</span>, <span class="kw">function</span> (Blueprint $table) {
+        $table-><span class="fn">id</span>();                    <span class="cm">// bigint unsigned auto-increment</span>
+        $table-><span class="fn">string</span>(<span class="str">'title'</span>);         <span class="cm">// VARCHAR(255)</span>
+        $table-><span class="fn">text</span>(<span class="str">'body'</span>);            <span class="cm">// TEXT</span>
+        $table-><span class="fn">boolean</span>(<span class="str">'published'</span>)-><span class="fn">default</span>(<span class="kw">false</span>);
+        $table-><span class="fn">unsignedBigInteger</span>(<span class="str">'user_id'</span>);
+        $table-><span class="fn">foreign</span>(<span class="str">'user_id'</span>)-><span class="fn">references</span>(<span class="str">'id'</span>)-><span class="fn">on</span>(<span class="str">'users'</span>);
+        $table-><span class="fn">timestamps</span>();           <span class="cm">// created_at + updated_at</span>
+        $table-><span class="fn">softDeletes</span>();          <span class="cm">// deleted_at (optional)</span>
+    });
+}
+
+<span class="kw">public function</span> <span class="fn">down</span>(): <span class="kw">void</span>
+{
+    Schema::<span class="fn">dropIfExists</span>(<span class="str">'posts'</span>);
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Common column types</span>
+        <div class="two-col">
+          <div>
+            <h4>Text / Numbers</h4>
+            <pre>$table-><span class="fn">string</span>(<span class="str">'name'</span>);
+$table-><span class="fn">string</span>(<span class="str">'email'</span>, <span class="nu">100</span>);
+$table-><span class="fn">text</span>(<span class="str">'bio'</span>);
+$table-><span class="fn">longText</span>(<span class="str">'content'</span>);
+$table-><span class="fn">integer</span>(<span class="str">'age'</span>);
+$table-><span class="fn">float</span>(<span class="str">'price'</span>);
+$table-><span class="fn">decimal</span>(<span class="str">'amount'</span>,<span class="nu">8</span>,<span class="nu">2</span>);</pre>
+          </div>
+          <div>
+            <h4>Dates / Special</h4>
+            <pre>$table-><span class="fn">boolean</span>(<span class="str">'active'</span>);
+$table-><span class="fn">date</span>(<span class="str">'birthday'</span>);
+$table-><span class="fn">timestamp</span>(<span class="str">'verified_at'</span>)
+  -><span class="fn">nullable</span>();
+$table-><span class="fn">enum</span>(<span class="str">'role'</span>, [
+  <span class="str">'admin'</span>, <span class="str">'user'</span>
+]);
+$table-><span class="fn">json</span>(<span class="str">'metadata'</span>);</pre>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Modifying existing tables</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:migration add_views_to_posts_table</span></div>
+        <pre><span class="kw">public function</span> <span class="fn">up</span>(): <span class="kw">void</span>
+{
+    Schema::<span class="fn">table</span>(<span class="str">'posts'</span>, <span class="kw">function</span> (Blueprint $table) {
+        $table-><span class="fn">integer</span>(<span class="str">'views'</span>)-><span class="fn">default</span>(<span class="nu">0</span>)-><span class="fn">after</span>(<span class="str">'body'</span>);
+    });
+}
+
+<span class="kw">public function</span> <span class="fn">down</span>(): <span class="kw">void</span>
+{
+    Schema::<span class="fn">table</span>(<span class="str">'posts'</span>, <span class="kw">function</span> (Blueprint $table) {
+        $table-><span class="fn">dropColumn</span>(<span class="str">'views'</span>);
+    });
+}</pre>
+      </div>
+    `
+  },
+  {
+    id: 'models',
+    label: '3. Models & Eloquent',
+    badge: 'ORM',
+    subtitle: 'Interact with your database using PHP objects instead of SQL',
+    content: `
+      <div class="card">
+        <span class="concept-badge">What is Eloquent?</span>
+        <p>Eloquent is Laravel's ORM (Object-Relational Mapper). Each database table has a corresponding "Model" class. You read/write the database using PHP methods instead of writing SQL.</p>
+        <div class="tip">Model = 1 PHP class ↔ 1 database table</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Creating a model</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:model Post -m</span><span style="font-size:11px;color:var(--color-text-tertiary);margin-left:8px">-m = also create migration</span></div>
+        <pre><span class="cm">// app/Models/Post.php</span>
+<span class="kw">class</span> Post <span class="kw">extends</span> Model
+{
+    <span class="kw">use</span> HasFactory;
+    
+    <span class="cm">// Columns that can be mass-assigned</span>
+    <span class="kw">protected</span> $fillable = [<span class="str">'title'</span>, <span class="str">'body'</span>, <span class="str">'user_id'</span>];
+    
+    <span class="cm">// Or use $guarded = [] to allow all</span>
+    
+    <span class="cm">// Automatically cast these types</span>
+    <span class="kw">protected</span> $casts = [
+        <span class="str">'published_at'</span> => <span class="str">'datetime'</span>,
+        <span class="str">'metadata'</span>    => <span class="str">'array'</span>,
+    ];
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">CRUD with Eloquent</span>
+        <pre><span class="cm">// CREATE</span>
+$post = Post::<span class="fn">create</span>([
+    <span class="str">'title'</span> => <span class="str">'My Post'</span>,
+    <span class="str">'body'</span>  => <span class="str">'Hello world'</span>,
+    <span class="str">'user_id'</span> => <span class="nu">1</span>,
+]);
+
+<span class="cm">// READ — single record</span>
+$post = Post::<span class="fn">find</span>(<span class="nu">1</span>);               <span class="cm">// null if not found</span>
+$post = Post::<span class="fn">findOrFail</span>(<span class="nu">1</span>);        <span class="cm">// 404 if not found</span>
+$post = Post::<span class="fn">where</span>(<span class="str">'title'</span>, <span class="str">'My Post'</span>)-><span class="fn">first</span>();
+
+<span class="cm">// READ — collection</span>
+$posts = Post::<span class="fn">all</span>();
+$posts = Post::<span class="fn">where</span>(<span class="str">'published'</span>, <span class="kw">true</span>)-><span class="fn">get</span>();
+$posts = Post::<span class="fn">latest</span>()-><span class="fn">paginate</span>(<span class="nu">10</span>);
+
+<span class="cm">// UPDATE</span>
+$post-><span class="fn">update</span>([<span class="str">'title'</span> => <span class="str">'New title'</span>]);
+$post->title = <span class="str">'New title'</span>;
+$post-><span class="fn">save</span>();
+
+<span class="cm">// DELETE</span>
+$post-><span class="fn">delete</span>();
+Post::<span class="fn">destroy</span>(<span class="nu">1</span>);
+Post::<span class="fn">destroy</span>([<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>]);</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Relationships</span>
+        <h3>Defining relationships between models</h3>
+        <pre><span class="cm">// User has many Posts (app/Models/User.php)</span>
+<span class="kw">public function</span> <span class="fn">posts</span>()
+{
+    <span class="kw">return</span> $this-><span class="fn">hasMany</span>(Post::class);
+}
+
+<span class="cm">// Post belongs to User (app/Models/Post.php)</span>
+<span class="kw">public function</span> <span class="fn">user</span>()
+{
+    <span class="kw">return</span> $this-><span class="fn">belongsTo</span>(User::class);
+}
+
+<span class="cm">// Usage</span>
+$user = User::<span class="fn">find</span>(<span class="nu">1</span>);
+$posts = $user->posts;          <span class="cm">// all posts</span>
+$post->user->name;              <span class="cm">// author name</span>
+
+<span class="cm">// Eager loading (prevents N+1 queries)</span>
+$posts = Post::<span class="fn">with</span>(<span class="str">'user'</span>)-><span class="fn">get</span>();
+$posts = Post::<span class="fn">with</span>([<span class="str">'user'</span>, <span class="str">'comments'</span>])-><span class="fn">get</span>();
+
+<span class="cm">// Many-to-Many (Post belongsToMany Tag)</span>
+<span class="kw">public function</span> <span class="fn">tags</span>()
+{
+    <span class="kw">return</span> $this-><span class="fn">belongsToMany</span>(Tag::class);
+}</pre>
+        <div class="warn">⚠️ Always use eager loading (<code>with()</code>) when looping — avoids N+1 query problem</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Query builder extras</span>
+        <pre><span class="cm">// Chaining conditions</span>
+Post::<span class="fn">where</span>(<span class="str">'published'</span>, <span class="kw">true</span>)
+    -><span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="nu">1</span>)
+    -><span class="fn">orderBy</span>(<span class="str">'created_at'</span>, <span class="str">'desc'</span>)
+    -><span class="fn">limit</span>(<span class="nu">5</span>)
+    -><span class="fn">get</span>();
+
+<span class="cm">// Aggregates</span>
+Post::<span class="fn">count</span>();
+Post::<span class="fn">max</span>(<span class="str">'views'</span>);
+Post::<span class="fn">sum</span>(<span class="str">'views'</span>);
+
+<span class="cm">// whereIn, whereNull</span>
+Post::<span class="fn">whereIn</span>(<span class="str">'id'</span>, [<span class="nu">1</span>,<span class="nu">2</span>,<span class="nu">3</span>])-><span class="fn">get</span>();
+Post::<span class="fn">whereNull</span>(<span class="str">'deleted_at'</span>)-><span class="fn">get</span>();</pre>
+      </div>
+    `
+  },
+  {
+    id: 'routes',
+    label: '4. Routes',
+    badge: 'HTTP Layer',
+    subtitle: 'Map URLs to controllers and define your application\'s endpoints',
+    content: `
+      <div class="card">
+        <span class="concept-badge">routes/web.php</span>
+        <pre><span class="kw">use</span> App\Http\Controllers\PostController;
+
+<span class="cm">// Basic routes</span>
+Route::<span class="fn">get</span>(<span class="str">'/posts'</span>, [PostController::class, <span class="str">'index'</span>]);
+Route::<span class="fn">post</span>(<span class="str">'/posts'</span>, [PostController::class, <span class="str">'store'</span>]);
+Route::<span class="fn">get</span>(<span class="str">'/posts/{id}'</span>, [PostController::class, <span class="str">'show'</span>]);
+Route::<span class="fn">put</span>(<span class="str">'/posts/{id}'</span>, [PostController::class, <span class="str">'update'</span>]);
+Route::<span class="fn">delete</span>(<span class="str">'/posts/{id}'</span>, [PostController::class, <span class="str">'destroy'</span>]);
+
+<span class="cm">// Named routes (use in views/redirects)</span>
+Route::<span class="fn">get</span>(<span class="str">'/posts'</span>, [PostController::class, <span class="str">'index'</span>])
+    -><span class="fn">name</span>(<span class="str">'posts.index'</span>);
+
+<span class="cm">// Route with parameter</span>
+Route::<span class="fn">get</span>(<span class="str">'/posts/{post}'</span>, [PostController::class, <span class="str">'show'</span>]);
+
+<span class="cm">// Optional parameter</span>
+Route::<span class="fn">get</span>(<span class="str">'/search/{query?}'</span>, fn($q = <span class="kw">null</span>) => $q);</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Resource routes — one line for 7 routes</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:controller PostController --resource</span></div>
+        <pre>Route::<span class="fn">resource</span>(<span class="str">'posts'</span>, PostController::class);</pre>
+        <p style="font-size:13px;margin:8px 0 4px">This single line creates all 7 RESTful routes:</p>
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <tr style="background:var(--color-background-secondary)"><th style="padding:6px 8px;text-align:left;font-weight:500">Method</th><th style="padding:6px 8px;text-align:left;font-weight:500">URI</th><th style="padding:6px 8px;text-align:left;font-weight:500">Action</th><th style="padding:6px 8px;text-align:left;font-weight:500">Name</th></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">GET</td><td style="padding:5px 8px">/posts</td><td style="padding:5px 8px">index</td><td style="padding:5px 8px">posts.index</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">GET</td><td style="padding:5px 8px">/posts/create</td><td style="padding:5px 8px">create</td><td style="padding:5px 8px">posts.create</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">POST</td><td style="padding:5px 8px">/posts</td><td style="padding:5px 8px">store</td><td style="padding:5px 8px">posts.store</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">GET</td><td style="padding:5px 8px">/posts/{post}</td><td style="padding:5px 8px">show</td><td style="padding:5px 8px">posts.show</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">GET</td><td style="padding:5px 8px">/posts/{post}/edit</td><td style="padding:5px 8px">edit</td><td style="padding:5px 8px">posts.edit</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">PUT/PATCH</td><td style="padding:5px 8px">/posts/{post}</td><td style="padding:5px 8px">update</td><td style="padding:5px 8px">posts.update</td></tr>
+          <tr style="border-top:0.5px solid var(--color-border-tertiary)"><td style="padding:5px 8px">DELETE</td><td style="padding:5px 8px">/posts/{post}</td><td style="padding:5px 8px">destroy</td><td style="padding:5px 8px">posts.destroy</td></tr>
+        </table>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Route groups & prefixes</span>
+        <pre><span class="cm">// Group with prefix + middleware</span>
+Route::<span class="fn">middleware</span>([<span class="str">'auth'</span>])-><span class="fn">prefix</span>(<span class="str">'admin'</span>)-><span class="fn">group</span>(<span class="kw">function</span>() {
+    Route::<span class="fn">resource</span>(<span class="str">'posts'</span>, PostController::class);
+    Route::<span class="fn">resource</span>(<span class="str">'users'</span>, UserController::class);
+});
+
+<span class="cm">// Named group</span>
+Route::<span class="fn">name</span>(<span class="str">'admin.'</span>)-><span class="fn">prefix</span>(<span class="str">'admin'</span>)-><span class="fn">group</span>(<span class="kw">function</span>() {
+    Route::<span class="fn">get</span>(<span class="str">'dashboard'</span>, fn() => <span class="fn">view</span>(<span class="str">'admin.dashboard'</span>))
+         -><span class="fn">name</span>(<span class="str">'dashboard'</span>); <span class="cm">// => admin.dashboard</span>
+});</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Using named routes</span>
+        <pre><span class="cm">// In blade views</span>
+&lt;a href="{{ <span class="fn">route</span>(<span class="str">'posts.index'</span>) }}"&gt;All posts&lt;/a&gt;
+&lt;a href="{{ <span class="fn">route</span>(<span class="str">'posts.show'</span>, $post) }}"&gt;View post&lt;/a&gt;
+
+<span class="cm">// In controllers (redirect)</span>
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.index'</span>);
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.show'</span>, [<span class="str">'post'</span> => $post->id]);</pre>
+      </div>
+    `
+  },
+  {
+    id: 'controllers',
+    label: '5. Controllers',
+    badge: 'Request Handling',
+    subtitle: 'Handle HTTP requests, call models, and return responses',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Full resource controller</span>
+        <pre><span class="cm">// app/Http/Controllers/PostController.php</span>
+<span class="kw">class</span> PostController <span class="kw">extends</span> Controller
+{
+    <span class="cm">// GET /posts — list all</span>
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        $posts = Post::<span class="fn">with</span>(<span class="str">'user'</span>)-><span class="fn">latest</span>()-><span class="fn">paginate</span>(<span class="nu">10</span>);
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'posts.index'</span>, <span class="fn">compact</span>(<span class="str">'posts'</span>));
+    }
+    
+    <span class="cm">// GET /posts/create — show create form</span>
+    <span class="kw">public function</span> <span class="fn">create</span>()
+    {
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'posts.create'</span>);
+    }
+    
+    <span class="cm">// POST /posts — save new post</span>
+    <span class="kw">public function</span> <span class="fn">store</span>(StorePostRequest $request)
+    {
+        $post = Post::<span class="fn">create</span>($request-><span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.show'</span>, $post)
+            -><span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Post created!'</span>);
+    }
+    
+    <span class="cm">// GET /posts/{post} — show one (route model binding)</span>
+    <span class="kw">public function</span> <span class="fn">show</span>(Post $post)
+    {
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'posts.show'</span>, <span class="fn">compact</span>(<span class="str">'post'</span>));
+    }
+    
+    <span class="cm">// GET /posts/{post}/edit</span>
+    <span class="kw">public function</span> <span class="fn">edit</span>(Post $post)
+    {
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'posts.edit'</span>, <span class="fn">compact</span>(<span class="str">'post'</span>));
+    }
+    
+    <span class="cm">// PUT /posts/{post}</span>
+    <span class="kw">public function</span> <span class="fn">update</span>(UpdatePostRequest $request, Post $post)
+    {
+        $post-><span class="fn">update</span>($request-><span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.show'</span>, $post);
+    }
+    
+    <span class="cm">// DELETE /posts/{post}</span>
+    <span class="kw">public function</span> <span class="fn">destroy</span>(Post $post)
+    {
+        $post-><span class="fn">delete</span>();
+        <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.index'</span>);
+    }
+}</pre>
+        <div class="tip">Notice: <code>Post $post</code> in method parameters = Route Model Binding — Laravel auto-fetches the record by ID. Returns 404 if not found.</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Response types</span>
+        <pre><span class="cm">// View response</span>
+<span class="kw">return</span> <span class="fn">view</span>(<span class="str">'posts.index'</span>, [<span class="str">'posts'</span> => $posts]);
+
+<span class="cm">// JSON response (for APIs)</span>
+<span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="str">'data'</span> => $posts], <span class="nu">200</span>);
+
+<span class="cm">// Redirect</span>
+<span class="kw">return</span> <span class="fn">redirect</span>(<span class="str">'/posts'</span>);
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.index'</span>);
+<span class="kw">return</span> <span class="fn">back</span>();                    <span class="cm">// redirect to previous</span>
+<span class="kw">return</span> <span class="fn">back</span>()-><span class="fn">withInput</span>();      <span class="cm">// redirect + keep form data</span>
+
+<span class="cm">// With flash message</span>
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'posts.index'</span>)
+    -><span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Post deleted!'</span>);</pre>
+      </div>
+    `
+  },
+  {
+    id: 'requests',
+    label: '6. Form Requests',
+    badge: 'Validation',
+    subtitle: 'Validate user input cleanly with dedicated Request classes',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Why Form Requests?</span>
+        <p>Instead of validating in your controller, you create a dedicated class. This keeps controllers thin and validation logic reusable.</p>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:request StorePostRequest</span></div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">The Request class</span>
+        <pre><span class="cm">// app/Http/Requests/StorePostRequest.php</span>
+<span class="kw">class</span> StorePostRequest <span class="kw">extends</span> FormRequest
+{
+    <span class="cm">// Who is allowed to make this request?</span>
+    <span class="kw">public function</span> <span class="fn">authorize</span>(): bool
+    {
+        <span class="kw">return</span> <span class="kw">true</span>; <span class="cm">// or: auth()->check()</span>
+    }
+    
+    <span class="cm">// Validation rules</span>
+    <span class="kw">public function</span> <span class="fn">rules</span>(): array
+    {
+        <span class="kw">return</span> [
+            <span class="str">'title'</span>    => [<span class="str">'required'</span>, <span class="str">'string'</span>, <span class="str">'max:255'</span>],
+            <span class="str">'body'</span>     => [<span class="str">'required'</span>, <span class="str">'string'</span>],
+            <span class="str">'category'</span> => [<span class="str">'required'</span>, <span class="str">'exists:categories,id'</span>],
+            <span class="str">'image'</span>    => [<span class="str">'nullable'</span>, <span class="str">'image'</span>, <span class="str">'max:2048'</span>],
+        ];
+    }
+    
+    <span class="cm">// Custom error messages (optional)</span>
+    <span class="kw">public function</span> <span class="fn">messages</span>(): array
+    {
+        <span class="kw">return</span> [
+            <span class="str">'title.required'</span> => <span class="str">'The post title is required.'</span>,
+            <span class="str">'category.exists'</span> => <span class="str">'Please choose a valid category.'</span>,
+        ];
+    }
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Common validation rules</span>
+        <div class="two-col">
+          <div>
+            <pre><span class="str">'required'</span>
+<span class="str">'nullable'</span>
+<span class="str">'string'</span>
+<span class="str">'integer'</span>
+<span class="str">'boolean'</span>
+<span class="str">'email'</span>
+<span class="str">'url'</span>
+<span class="str">'numeric'</span>
+<span class="str">'min:3'</span>
+<span class="str">'max:255'</span>
+<span class="str">'between:1,100'</span></pre>
+          </div>
+          <div>
+            <pre><span class="str">'unique:users,email'</span>
+<span class="str">'exists:roles,id'</span>
+<span class="str">'confirmed'</span>  <span class="cm">// needs _confirmation</span>
+<span class="str">'date'</span>
+<span class="str">'after:today'</span>
+<span class="str">'image'</span>
+<span class="str">'mimes:jpg,png'</span>
+<span class="str">'array'</span>
+<span class="str">'in:admin,user'</span>
+<span class="str">'regex:/^[A-Z]/'</span></pre>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">In the controller</span>
+        <pre><span class="cm">// Just type-hint the Request class — validation runs automatically!</span>
+<span class="kw">public function</span> <span class="fn">store</span>(StorePostRequest $request)
+{
+    <span class="cm">// If validation fails, auto-redirects back with errors</span>
+    <span class="cm">// Only reach here if ALL rules pass</span>
+    
+    $validated = $request-><span class="fn">validated</span>(); <span class="cm">// only validated fields</span>
+    Post::<span class="fn">create</span>($validated);
+    
+    <span class="cm">// Access request data</span>
+    $title = $request-><span class="fn">input</span>(<span class="str">'title'</span>);
+    $all   = $request-><span class="fn">all</span>();
+    $file  = $request-><span class="fn">file</span>(<span class="str">'image'</span>);
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Show errors in Blade</span>
+        <pre>&lt;<span class="kw">input</span> type=<span class="str">"text"</span> name=<span class="str">"title"</span>
+    value=<span class="str">"{{ old('title') }}"</span>
+    class=<span class="str">"{{ $errors->has('title') ? 'is-invalid' : '' }}"</span>&gt;
+
+@<span class="kw">error</span>('title')
+    &lt;span class=<span class="str">"error"</span>&gt;{{ $message }}&lt;/span&gt;
+@<span class="kw">enderror</span></pre>
+      </div>
+    `
+  },
+  {
+    id: 'middleware',
+    label: '7. Middleware',
+    badge: 'Request Filter',
+    subtitle: 'Inspect or filter HTTP requests before they reach your controller',
+    content: `
+      <div class="card">
+        <span class="concept-badge">What is middleware?</span>
+        <p>Middleware sits between the request and your controller. It can: check if a user is logged in, verify roles/permissions, log requests, add headers, rate-limit, etc.</p>
+        <div class="tip">Request → Middleware 1 → Middleware 2 → Controller → Response</div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:middleware CheckAge</span></div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Creating middleware</span>
+        <pre><span class="cm">// app/Http/Middleware/CheckAge.php</span>
+<span class="kw">class</span> CheckAge
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(Request $request, Closure $next): Response
+    {
+        <span class="cm">// Run BEFORE the request reaches the controller</span>
+        <span class="kw">if</span> ($request-><span class="fn">input</span>(<span class="str">'age'</span>) < <span class="nu">18</span>) {
+            <span class="kw">return</span> <span class="fn">redirect</span>(<span class="str">'home'</span>);
+        }
+        
+        $response = $next($request); <span class="cm">// pass to next middleware/controller</span>
+        
+        <span class="cm">// Optionally run AFTER (modify response)</span>
+        $response-><span class="fn">headers</span>-><span class="fn">set</span>(<span class="str">'X-My-Header'</span>, <span class="str">'value'</span>);
+        
+        <span class="kw">return</span> $response;
+    }
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Registering & using middleware</span>
+        <pre><span class="cm">// 1. Register in bootstrap/app.php (Laravel 11)</span>
+<span class="kw">use</span> App\Http\Middleware\CheckAge;
+
+$app-><span class="fn">withMiddleware</span>(<span class="kw">function</span>(Middleware $middleware) {
+    $middleware-><span class="fn">alias</span>([
+        <span class="str">'check.age'</span> => CheckAge::class,
+    ]);
+});
+
+<span class="cm">// 2. Apply to routes</span>
+Route::<span class="fn">get</span>(<span class="str">'/adults'</span>, [PageController::class, <span class="str">'index'</span>])
+    -><span class="fn">middleware</span>(<span class="str">'check.age'</span>);
+
+Route::<span class="fn">middleware</span>([<span class="str">'auth'</span>, <span class="str">'check.age'</span>])-><span class="fn">group</span>(<span class="kw">function</span>() {
+    Route::<span class="fn">resource</span>(<span class="str">'posts'</span>, PostController::class);
+});
+
+<span class="cm">// 3. Apply directly in controller constructor</span>
+<span class="kw">public function</span> <span class="fn">__construct</span>()
+{
+    $this-><span class="fn">middleware</span>(<span class="str">'auth'</span>);
+    $this-><span class="fn">middleware</span>(<span class="str">'check.age'</span>)-><span class="fn">only</span>([<span class="str">'create'</span>, <span class="str">'store'</span>]);
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Built-in middleware to know</span>
+        <div class="steps">
+          <div class="step"><div class="step-num">🔒</div><div class="step-body"><strong>auth</strong><p>Requires user to be logged in. Redirects to login if not.</p></div></div>
+          <div class="step"><div class="step-num">👤</div><div class="step-body"><strong>guest</strong><p>Only accessible to non-logged-in users (login/register pages).</p></div></div>
+          <div class="step"><div class="step-num">✅</div><div class="step-body"><strong>verified</strong><p>Requires email to be verified.</p></div></div>
+          <div class="step"><div class="step-num">🚦</div><div class="step-body"><strong>throttle:60,1</strong><p>Rate limiting — 60 requests per minute.</p></div></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: 'blade',
+    label: '8. Blade Views',
+    badge: 'Templates',
+    subtitle: 'Server-side HTML templates with layouts, loops, and components',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Blade basics</span>
+        <pre><span class="cm">{{-- This is a comment (not rendered) --}}</span>
+
+<span class="cm">{{-- Echo a variable (auto-escapes HTML) --}}</span>
+{{ $post->title }}
+
+<span class="cm">{{-- Unescaped (raw HTML — use carefully!) --}}</span>
+{!! $post->body !!}
+
+<span class="cm">{{-- Conditionals --}}</span>
+@<span class="kw">if</span> ($post->published)
+    &lt;span&gt;Published&lt;/span&gt;
+@<span class="kw">elseif</span> ($post->draft)
+    &lt;span&gt;Draft&lt;/span&gt;
+@<span class="kw">else</span>
+    &lt;span&gt;Pending&lt;/span&gt;
+@<span class="kw">endif</span>
+
+@<span class="kw">unless</span> ($post->published)
+    &lt;p&gt;Not yet published&lt;/p&gt;
+@<span class="kw">endunless</span></pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Loops</span>
+        <pre>@<span class="kw">foreach</span> ($posts <span class="kw">as</span> $post)
+    &lt;div&gt;
+        &lt;h2&gt;{{ $post->title }}&lt;/h2&gt;
+        <span class="cm">{{-- $loop variable gives you useful info --}}</span>
+        @<span class="kw">if</span> ($loop->first) &lt;span&gt;First!&lt;/span&gt; @<span class="kw">endif</span>
+        @<span class="kw">if</span> ($loop->last)  &lt;span&gt;Last!&lt;/span&gt;  @<span class="kw">endif</span>
+        {{ $loop->index }}    <span class="cm">{{-- 0-based --}}</span>
+        {{ $loop->iteration }} <span class="cm">{{-- 1-based --}}</span>
+    &lt;/div&gt;
+@<span class="kw">endforeach</span>
+
+@<span class="kw">forelse</span> ($posts <span class="kw">as</span> $post)
+    &lt;div&gt;{{ $post->title }}&lt;/div&gt;
+@<span class="kw">empty</span>
+    &lt;p&gt;No posts found.&lt;/p&gt;
+@<span class="kw">endforelse</span></pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Layouts (template inheritance)</span>
+        <pre><span class="cm">{{-- resources/views/layouts/app.blade.php --}}</span>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;@<span class="kw">yield</span>('title', 'My App')&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+    @<span class="kw">include</span>('layouts.navbar')
+    &lt;main&gt;@<span class="kw">yield</span>('content')&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+<span class="cm">{{-- resources/views/posts/index.blade.php --}}</span>
+@<span class="kw">extends</span>('layouts.app')
+
+@<span class="kw">section</span>('title', 'All Posts')
+
+@<span class="kw">section</span>('content')
+    &lt;h1&gt;Posts&lt;/h1&gt;
+    @<span class="kw">foreach</span> ($posts <span class="kw">as</span> $post)
+        &lt;div&gt;{{ $post->title }}&lt;/div&gt;
+    @<span class="kw">endforeach</span>
+@<span class="kw">endsection</span></pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Auth & session directives</span>
+        <pre>@<span class="kw">auth</span>
+    &lt;p&gt;Welcome, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
+@<span class="kw">endauth</span>
+
+@<span class="kw">guest</span>
+    &lt;a href=<span class="str">"/login"</span>&gt;Login&lt;/a&gt;
+@<span class="kw">endguest</span>
+
+<span class="cm">{{-- Flash messages --}}</span>
+@<span class="kw">if</span> (session('success'))
+    &lt;div class=<span class="str">"alert"</span>&gt;{{ session('success') }}&lt;/div&gt;
+@<span class="kw">endif</span>
+
+<span class="cm">{{-- CSRF token (required in all forms) --}}</span>
+&lt;form method=<span class="str">"POST"</span> action=<span class="str">"/posts"</span>&gt;
+    @<span class="kw">csrf</span>
+    @<span class="kw">method</span>('PUT')  <span class="cm">{{-- for PUT/DELETE forms --}}</span>
+    ...
+&lt;/form&gt;</pre>
+      </div>
+    `
+  },
+  {
+    id: 'seeders',
+    label: '9. Seeders & Factories',
+    badge: 'Test Data',
+    subtitle: 'Populate your database with fake data for development and testing',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Factory — define fake model data</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:factory PostFactory --model=Post</span></div>
+        <pre><span class="cm">// database/factories/PostFactory.php</span>
+<span class="kw">class</span> PostFactory <span class="kw">extends</span> Factory
+{
+    <span class="kw">protected</span> $model = Post::class;
+    
+    <span class="kw">public function</span> <span class="fn">definition</span>(): array
+    {
+        <span class="kw">return</span> [
+            <span class="str">'title'</span>     => <span class="fn">fake</span>()-><span class="fn">sentence</span>(<span class="nu">6</span>),
+            <span class="str">'body'</span>      => <span class="fn">fake</span>()-><span class="fn">paragraphs</span>(<span class="nu">3</span>, <span class="kw">true</span>),
+            <span class="str">'user_id'</span>   => User::<span class="fn">factory</span>(),
+            <span class="str">'published'</span> => <span class="fn">fake</span>()-><span class="fn">boolean</span>(<span class="nu">80</span>), <span class="cm">// 80% true</span>
+        ];
+    }
+    
+    <span class="cm">// Custom state</span>
+    <span class="kw">public function</span> <span class="fn">published</span>(): static
+    {
+        <span class="kw">return</span> $this-><span class="fn">state</span>([<span class="str">'published'</span> => <span class="kw">true</span>]);
+    }
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Seeder — run factory to seed the DB</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:seeder PostSeeder</span></div>
+        <pre><span class="cm">// database/seeders/PostSeeder.php</span>
+<span class="kw">class</span> PostSeeder <span class="kw">extends</span> Seeder
+{
+    <span class="kw">public function</span> <span class="fn">run</span>(): <span class="kw">void</span>
+    {
+        Post::<span class="fn">factory</span>(<span class="nu">50</span>)-><span class="fn">create</span>();           <span class="cm">// 50 random posts</span>
+        Post::<span class="fn">factory</span>(<span class="nu">10</span>)-><span class="fn">published</span>()-><span class="fn">create</span>(); <span class="cm">// 10 published</span>
+    }
+}
+
+<span class="cm">// database/seeders/DatabaseSeeder.php</span>
+<span class="kw">public function</span> <span class="fn">run</span>(): <span class="kw">void</span>
+{
+    $this-><span class="fn">call</span>([
+        UserSeeder::class,
+        PostSeeder::class,
+    ]);
+}</pre>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan db:seed</span></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan migrate:fresh --seed</span><span style="font-size:11px;color:var(--color-text-tertiary);margin-left:8px">⚠️ drops all tables first</span></div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Useful faker methods</span>
+        <div class="two-col">
+          <div>
+            <pre><span class="fn">fake</span>()-><span class="fn">name</span>()
+<span class="fn">fake</span>()-><span class="fn">email</span>()
+<span class="fn">fake</span>()-><span class="fn">password</span>()
+<span class="fn">fake</span>()-><span class="fn">sentence</span>(<span class="nu">5</span>)
+<span class="fn">fake</span>()-><span class="fn">paragraph</span>()
+<span class="fn">fake</span>()-><span class="fn">text</span>(<span class="nu">200</span>)</pre>
+          </div>
+          <div>
+            <pre><span class="fn">fake</span>()-><span class="fn">numberBetween</span>(<span class="nu">1</span>,<span class="nu">100</span>)
+<span class="fn">fake</span>()-><span class="fn">boolean</span>(<span class="nu">70</span>)
+<span class="fn">fake</span>()-><span class="fn">dateTimeBetween</span>(...)
+<span class="fn">fake</span>()-><span class="fn">imageUrl</span>(<span class="nu">640</span>,<span class="nu">480</span>)
+<span class="fn">fake</span>()-><span class="fn">randomElement</span>([...])
+<span class="fn">fake</span>()-><span class="fn">unique</span>()-><span class="fn">slug</span>()</pre>
+          </div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: 'auth',
+    label: '10. Authentication',
+    badge: 'Security',
+    subtitle: 'User login, registration, and protecting routes',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Quick scaffolding with Breeze</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">composer require laravel/breeze --dev</span></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan breeze:install blade</span></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan migrate && npm install && npm run dev</span></div>
+        <div class="tip">Breeze gives you login, register, forgot-password, email verify, and profile update — all wired up!</div>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Auth facade — common methods</span>
+        <pre><span class="cm">// Check if logged in</span>
+<span class="fn">auth</span>()-><span class="fn">check</span>()
+<span class="fn">auth</span>()-><span class="fn">guest</span>()
+
+<span class="cm">// Get current user</span>
+$user = <span class="fn">auth</span>()-><span class="fn">user</span>();
+$id   = <span class="fn">auth</span>()-><span class="fn">id</span>();
+
+<span class="cm">// Manual login/logout</span>
+<span class="fn">auth</span>()-><span class="fn">login</span>($user);
+<span class="fn">auth</span>()-><span class="fn">logout</span>();
+<span class="fn">auth</span>()-><span class="fn">attempt</span>([
+    <span class="str">'email'</span>    => $request->email,
+    <span class="str">'password'</span> => $request->password,
+]);
+
+<span class="cm">// Protecting a route</span>
+Route::<span class="fn">get</span>(<span class="str">'/dashboard'</span>, [DashboardController::class, <span class="str">'index'</span>])
+    -><span class="fn">middleware</span>(<span class="str">'auth'</span>);</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Authorization — Gates & Policies</span>
+        <pre><span class="cm">// Gate (simple, in AuthServiceProvider)</span>
+Gate::<span class="fn">define</span>(<span class="str">'edit-post'</span>, <span class="kw">function</span>(User $user, Post $post) {
+    <span class="kw">return</span> $user->id === $post->user_id;
+});
+
+<span class="cm">// Use gate</span>
+<span class="kw">if</span> (Gate::<span class="fn">allows</span>(<span class="str">'edit-post'</span>, $post)) { ... }
+<span class="kw">if</span> (Gate::<span class="fn">denies</span>(<span class="str">'edit-post'</span>, $post)) { <span class="fn">abort</span>(<span class="nu">403</span>); }
+$this-><span class="fn">authorize</span>(<span class="str">'edit-post'</span>, $post); <span class="cm">// throws 403</span>
+
+<span class="cm">// Policy (recommended for models)</span></pre>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:policy PostPolicy --model=Post</span></div>
+        <pre><span class="cm">// In controller:</span>
+$this-><span class="fn">authorize</span>(<span class="str">'update'</span>, $post); <span class="cm">// uses PostPolicy::update()</span>
+
+<span class="cm">// In Blade:</span>
+@<span class="kw">can</span>('update', $post)
+    &lt;a href=<span class="str">"..."</span>&gt;Edit&lt;/a&gt;
+@<span class="kw">endcan</span></pre>
+      </div>
+    `
+  },
+  {
+    id: 'api',
+    label: '11. API Resources',
+    badge: 'REST API',
+    subtitle: 'Build JSON APIs with API Resources and proper responses',
+    content: `
+      <div class="card">
+        <span class="concept-badge">API Resource — transform model to JSON</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:resource PostResource</span></div>
+        <pre><span class="cm">// app/Http/Resources/PostResource.php</span>
+<span class="kw">class</span> PostResource <span class="kw">extends</span> JsonResource
+{
+    <span class="kw">public function</span> <span class="fn">toArray</span>(Request $request): array
+    {
+        <span class="kw">return</span> [
+            <span class="str">'id'</span>         => $this->id,
+            <span class="str">'title'</span>      => $this->title,
+            <span class="str">'body'</span>       => $this->body,
+            <span class="str">'author'</span>     => $this->user->name,
+            <span class="str">'created_at'</span> => $this->created_at-><span class="fn">toDateString</span>(),
+            <span class="cm">// Conditionally include</span>
+            <span class="str">'secret'</span>     => $this-><span class="fn">when</span>($request-><span class="fn">user</span>()-><span class="fn">isAdmin</span>(), $this->secret),
+        ];
+    }
+}</pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Using resources in controllers</span>
+        <pre><span class="cm">// Single resource</span>
+<span class="kw">return</span> <span class="kw">new</span> PostResource($post);
+
+<span class="cm">// Collection of resources</span>
+<span class="kw">return</span> PostResource::<span class="fn">collection</span>(Post::<span class="fn">all</span>());
+<span class="kw">return</span> PostResource::<span class="fn">collection</span>(Post::<span class="fn">paginate</span>(<span class="nu">10</span>));
+
+<span class="cm">// With extra data (wrapper)</span>
+<span class="kw">return</span> PostResource::<span class="fn">collection</span>($posts)
+    -><span class="fn">additional</span>([<span class="str">'meta'</span> => [<span class="str">'total'</span> => $posts-><span class="fn">total</span>()]]);
+
+<span class="cm">// API routes (routes/api.php)</span>
+Route::<span class="fn">apiResource</span>(<span class="str">'posts'</span>, PostController::class);
+<span class="cm">// Same as resource() but without create/edit (no forms needed)</span></pre>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Typical JSON response</span>
+        <pre>{
+  <span class="str">"data"</span>: {
+    <span class="str">"id"</span>: <span class="nu">1</span>,
+    <span class="str">"title"</span>: <span class="str">"My First Post"</span>,
+    <span class="str">"author"</span>: <span class="str">"Ali"</span>,
+    <span class="str">"created_at"</span>: <span class="str">"2024-01-15"</span>
+  }
+}
+
+<span class="cm">// Collection:</span>
+{
+  <span class="str">"data"</span>: [ ... ],
+  <span class="str">"links"</span>: { <span class="str">"first"</span>: <span class="str">"..."</span>, <span class="str">"next"</span>: <span class="str">"..."</span> },
+  <span class="str">"meta"</span>: { <span class="str">"total"</span>: <span class="nu">50</span>, <span class="str">"per_page"</span>: <span class="nu">10</span> }
+}</pre>
+      </div>
+    `
+  },
+  {
+    id: 'practice',
+    label: '12. Practice Exercises',
+    badge: 'Hands-on',
+    subtitle: 'Reinforce everything by building a complete mini project',
+    content: `
+      <div class="card">
+        <span class="concept-badge">Project: Blog with Auth</span>
+        <p>Build a fully functional blog where users can register, login, create posts, and only edit/delete their own posts. This touches every concept.</p>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Step-by-step checklist</span>
+        <ul class="checklist" id="checklist">
+          <li onclick="toggleCheck(this)"><div class="chk" id="c0"></div>Create Laravel project and configure .env DB connection</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c1"></div>Install Laravel Breeze (auth scaffolding)</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c2"></div>Create Post model + migration (title, body, user_id, published)</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c3"></div>Create PostFactory and PostSeeder, seed 20 posts</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c4"></div>Create resource routes for posts (Route::resource)</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c5"></div>Create PostController with all 7 methods</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c6"></div>Create StorePostRequest with validation rules</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c7"></div>Create layout blade file with @yield('content')</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c8"></div>Create index, create, edit, show blade views</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c9"></div>Create CheckOwner middleware (only post owner can edit/delete)</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c10"></div>Apply auth middleware to create/edit/delete routes</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c11"></div>Add PostResource and create API routes (routes/api.php)</li>
+          <li onclick="toggleCheck(this)"><div class="chk" id="c12"></div>Test all routes with php artisan route:list</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <span class="concept-badge">Quick reference commands</span>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan make:model Post -mcrsf</span><span style="font-size:11px;color:var(--color-text-tertiary);margin-left:6px">-m -c -r -s -f in one go!</span></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan route:list --name=posts</span></div>
+        <div class="cmd-block"><span class="cmd-prefix">$</span><span class="cmd-text">php artisan tinker</span></div>
+        <pre><span class="cm">// In tinker — test your models live!</span>
+Post::<span class="fn">count</span>()
+Post::<span class="fn">factory</span>(<span class="nu">5</span>)-><span class="fn">create</span>()
+Post::<span class="fn">with</span>(<span class="str">'user'</span>)-><span class="fn">first</span>()
+User::<span class="fn">find</span>(<span class="nu">1</span>)->posts-><span class="fn">count</span>()</pre>
+      </div>
+      
+      <div class="card done-banner">
+        <h2>You know Laravel! 🎉</h2>
+        <p>You've covered: Artisan, Migrations, Models, Routes, Controllers, Requests, Middleware, Blade, Seeders, Auth, and API Resources. Good luck on your EFM!</p>
+      </div>
+    `
+  }
+];
+
+let current = 0;
+const done = new Set();
+
+function init() {
+  const progressBar = document.getElementById('progress-bar');
+  const navPills = document.getElementById('nav-pills');
+  const sections = document.getElementById('sections');
+  
+  topics.forEach((t, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot';
+    dot.id = 'dot-' + i;
+    dot.onclick = () => goTo(i);
+    progressBar.appendChild(dot);
+    
+    const pill = document.createElement('div');
+    pill.className = 'pill';
+    pill.id = 'pill-' + i;
+    pill.textContent = t.label;
+    pill.onclick = () => goTo(i);
+    navPills.appendChild(pill);
+    
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.id = 'section-' + i;
+    sec.innerHTML = `
+      <div style="margin-bottom:1rem">
+        <div class="sec-title">${t.label}</div>
+        <div class="sec-sub">${t.subtitle}</div>
+      </div>
+      ${t.content}
+    `;
+    sections.appendChild(sec);
+  });
+  
+  goTo(0);
+}
+
+function goTo(i) {
+  document.getElementById('section-' + current)?.classList.remove('active');
+  document.getElementById('pill-' + current)?.classList.remove('active');
+  
+  current = i;
+  done.add(i);
+  
+  document.getElementById('section-' + i).classList.add('active');
+  document.getElementById('pill-' + i).classList.add('active');
+  
+  topics.forEach((_, j) => {
+    const dot = document.getElementById('dot-' + j);
+    dot.className = 'prog-dot' + (j === i ? ' active' : (done.has(j) ? ' done' : ''));
+  });
+  
+  document.getElementById('btn-prev').disabled = i === 0;
+  document.getElementById('btn-prev').style.opacity = i === 0 ? '0.4' : '1';
+  document.getElementById('btn-next').textContent = i === topics.length - 1 ? 'Done ✓' : 'Next →';
+  
+  window.scrollTo(0, 0);
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next >= 0 && next < topics.length) goTo(next);
+}
+
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+
+function toggleCheck(li) {
+  const chk = li.querySelector('.chk');
+  chk.classList.toggle('checked');
+}
+
+init();
+</script>
+</body>
+</html>
